@@ -1,0 +1,185 @@
+
+{ 
+Use on HTF like Daily.
+Format decimals out. 
+format bang4buck to % if you want. The higher the better. 
+	}
+//REMEMBER TO CAPS LOCK THE SYMBOLS
+Using tsdata.marketdata;
+
+Once clearprintlog;	
+Input:
+	ATRLength (50);
+Vars:
+	String1("//////////"),
+	double ATR(.00001),
+	double Ticksperday(.00001),
+	double MinPriceMove(.00001),  // @es: .25 //@cl: .01 //@eurUsd: .00001 
+	double moneyperday(.00001),
+	double DollarPerTick(0),
+	double InitMargin(0);
+
+ATR = AvgTrueRange( ATRLength ) ;
+
+If symAttr.symboltype.tostring() = "future" then
+Begin
+//Futures
+If (symbol = "@ES" or symbol = "@ES=107XN") then Begin 
+	MinPriceMove = .25;
+	DollarPerTick = 12.5;
+	InitMargin = 12650;	
+	End;
+If (symbol = "@CL" or symbol = "@CL=104XN") then Begin
+	MinPriceMove = .01;
+	DollarPerTick = 10;	
+	InitMargin = 6765;	End;
+If (symbol = "@NQ" or symbol = "@NQ=106XN") then Begin
+	MinPriceMove = .25;
+	DollarPerTick = 5;
+	InitMargin = 17600;	End;
+If (symbol = "@YM" or symbol = "@YM=105XN") then Begin 
+	MinPriceMove = 1;
+	DollarPerTick = 5;
+	InitMargin = 9350;	End;
+If (symbol = "@GC" or symbol = "@GC=121XN+GJMQZ") then begin
+	MinPriceMove = .1;
+	DollarPerTick = 10;
+	InitMargin = 7150;	End;
+If (symbol = "@TY" or symbol = "@TY=117XN") then Begin		//BONDS are incorrect.
+	MinPriceMove = .015625;
+	DollarPerTick = 15.625;
+	InitMargin = 1650;	End;
+If (symbol = "@US" or symbol = "@US=117XN") then Begin 
+	MinPriceMove = .03125;	// 01/32
+	DollarPerTick = 31.25;
+	InitMargin = 3850;	End;
+If (symbol = "@HG" or symbol = "@HG=123XN+HKNUZ") then begin 
+	MinPriceMove = .0005;
+	DollarPerTick = 12.5;
+	InitMargin = 5940;	End;
+If (symbol = "@SI" or symbol = "@SI=123XN+HKNUZ") then begin
+	MinPriceMove = .005;
+	DollarPerTick = 25;
+	InitMargin = 10450;	End;
+If (symbol = "@NG" or symbol = "@NG=105XN") then begin
+	MinPriceMove = .001;
+	DollarPerTick = 10;
+	InitMargin = 6050;	End;
+If (symbol = "@RB" or symbol = "@RB=111XN") then begin 
+	MinPriceMove = .0001;
+	DollarPerTick = 4.2;
+	InitMargin = 6765;	End;
+If (symbol = "@NK" or symbol = "@NK=101XN") then begin
+	MinPriceMove = 5;
+	DollarPerTick = 25;
+	InitMargin = 7975;	End;
+If (symbol = "@BO" or symbol = "@BO=116XN+FHKNZ") then begin 
+	MinPriceMove = .01;
+	DollarPerTick = 6;
+	InitMargin = 2750;	End;
+If (symbol = "@S" or symbol = "@S=115XN+FHKNX") then begin
+	MinPriceMove = .25; //2/8
+	DollarPerTick = 12.5;
+	InitMargin = 2915;	End;
+If (symbol = "@C" or symbol = "@C=117XN+HKNUZ") then begin
+	MinPriceMove = .25;	//2/8
+	DollarPerTick = 12.5;
+	InitMargin = 1678;	End;
+If (symbol = "@LH" or symbol = "@LH=120XN+GJMQVZ") then begin
+	MinPriceMove = .025;
+	DollarPerTick = 10;
+	InitMargin = 2090;	End;
+If symbol = "@SM" then begin
+	MinPriceMove = .1;
+	DollarPerTick = 10;
+	InitMargin = 2200;	End;
+If (symbol = "@W" or symbol = "@W=117XN+HKNUZ") then begin
+	MinPriceMove = .25;	//2/8
+	DollarPerTick = 12.5;
+	InitMargin = 2063;	End;
+If (symbol = "@LC" or symbol = "@LC=125XN+GJMQVZ") then begin	
+	MinPriceMove = .025;
+	DollarPerTick = 10;
+	InitMargin = 1540;	End;
+If (symbol = "@MES" or symbol = "@MES=107XN") then begin	
+	MinPriceMove = .25;
+	DollarPerTick = 1.25;
+	InitMargin = 1265;	End;
+If (symbol = "@EC" or symbol = "@EC=102XN" or symbol = "@JY=102XN") then begin	
+	MinPriceMove = .00005;
+	DollarPerTick = 6.25;
+	InitMargin = 2500;	End;
+If (symbol = "@CD=102XN" or symbol = "@AD=102XN") then begin	
+	MinPriceMove = .00005;
+	DollarPerTick = 5;
+	InitMargin = 1700;	End;
+If (symbol = "@BP" or symbol = "@BP=102XN") then begin	
+	MinPriceMove = .0001;
+	DollarPerTick = 6.25;
+	InitMargin = 2365;	End;
+If symbol = "@DX=102XN" then begin	
+	MinPriceMove = .005;
+	DollarPerTick = 5;
+	InitMargin = 2090;	End;
+If (symbol = "@MBT" or symbol = "@BTC") then begin	
+	MinPriceMove = 5;
+	DollarPerTick = .5;	InitMargin = 1507;	End;
+If (symbol = "@PL") then begin	
+	MinPriceMove = .1;
+	DollarPerTick = 5;	InitMargin = 3575;	End;
+END;
+//Stocks
+If symAttr.symboltype.tostring() = "stock" then
+Begin
+
+MinPriceMove = .01;
+DollarPerTick = .01;
+
+
+End;
+
+//forex
+If symAttr.symboltype.tostring() = "forex" then
+Begin
+If symbol = "EURUSD" then MinPriceMove = .00001;
+If symbol = "GBPUSD" then MinPriceMove = .00001;
+If symbol = "USDCHF" then MinPriceMove = .00001;
+If symbol = "USDCAD" then MinPriceMove = .00001;
+If symbol = "EURGBP" then MinPriceMove = .00001;
+If symbol = "EURCHF" then MinPriceMove = .00001;
+If symbol = "EURCAD" then MinPriceMove = .00001;
+If symbol = "GBPCHF" then MinPriceMove = .00001;
+If symbol = "USDJPY" then MinPriceMove = .00001;
+If symbol = "AUDUSD" then MinPriceMove = .00001;
+If symbol = "NZDUSD" then MinPriceMove = .00001;
+If symbol = "EURJPY" then MinPriceMove = .001;
+If symbol = "GBPJPY" then MinPriceMove = .001;
+end;
+
+Ticksperday = iff(MinPriceMove <> 0.00000, ATR / MinPriceMove, 1);
+Moneyperday = Ticksperday * Dollarpertick;
+
+If symAttr.symboltype.tostring() = "forex" then
+Begin //10,000 = minilot
+//ticksperday = atr / (MinPriceMove / .10);
+Moneyperday = (atr / (MinPriceMove / .10)) * 1;
+End;
+//Print("Ticksperday: ", ticksperday, "  MoneyPerDay: ", moneyperday);
+Plot1(ticksperday, !("ticksperday"));
+Plot2(moneyperday, !("Moneyperday"));
+Plot3(InitMargin, !("Margin"));
+//Value1 = iff(moneyperday<>0, InitMargin/moneyperday,1);
+Value2 = iff(InitMargin<>0, moneyperday/InitMargin,1);
+Plot4(Value2, !("bang4buck")); //Greater, then better!
+
+
+
+//Additions
+If ticksperday <= 65 then 
+Begin
+	setplotcolor(1, darkred);
+End
+Else 
+Begin
+	setplotcolor(1, lightgray); 
+End;
